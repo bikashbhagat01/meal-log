@@ -1,9 +1,12 @@
 {
     "compilerOptions": {
-      "target": "ESNext",
-      "module": "CommonJS",
-      "strict": true,
+      "module": "ESNext",
+      "target": "ES2017",
+      "moduleResolution": "Node",
       "esModuleInterop": true,
-      "skipLibCheck": true
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "strict": true
     }
   }
+  
