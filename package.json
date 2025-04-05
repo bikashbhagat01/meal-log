@@ -1,0 +1,15 @@
+{
+    "name": "ai-caltrack-agent",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^18",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@octokit/rest": "^21.1.1",
+        "@pulumi/github": "^6.7.0",
+        "@pulumi/pulumi": "^3.113.0",
+        "dotenv": "^16.4.7",
+        "openai": "^4.91.1"
+    }
+}

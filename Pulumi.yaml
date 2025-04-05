@@ -1,0 +1,10 @@
+name: ai-caltrack-agent
+description: This project builds a developer-friendly, AI-powered health assistant using GitHub and Pulumi to automate and personalize workflows.
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
