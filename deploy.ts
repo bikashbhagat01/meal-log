@@ -1,11 +1,12 @@
+import * as pulumi from "@pulumi/pulumi";
 import { Octokit } from "@octokit/rest";
-import { config } from "dotenv";
 import fetch from "node-fetch";
+import { config } from "dotenv";
 
 config();
 
 const github = new Octokit({ auth: process.env.MY_GITHUB_TOKEN });
-const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY!;
+const PULUMI_ACCESS_TOKEN = process.env.PULUMI_ACCESS_TOKEN!;
 
 // Define the expected response type from Hugging Face
 interface HuggingFaceResponse {
@@ -28,16 +29,14 @@ async function analyzeLatestMeal() {
     return;
   }
 
-  const prompt = `You are a nutritionist. Analyze this meal and give Health suggestions
-
-  on the Meal:\n${latest.body}`;
+  const prompt = `You are a nutritionist. Analyze this meal and give Health suggestions on the Meal:\n${latest.body}`;
 
   const response = await fetch(
     "https://api-inference.huggingface.co/models/google/flan-t5-large",
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${HUGGINGFACE_API_KEY}`,
+        Authorization: `Bearer ${PULUMI_ACCESS_TOKEN}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -47,10 +46,8 @@ async function analyzeLatestMeal() {
     }
   );
 
-  // Type the result as an array of HuggingFaceResponse or handle errors
   const result = (await response.json()) as HuggingFaceResponse[] | { error: string };
   
-  // Check if result is an array and has the expected property
   const feedback =
     Array.isArray(result) && result[0]?.generated_text
       ? result[0].generated_text

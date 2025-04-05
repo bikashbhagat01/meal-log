@@ -3,13 +3,14 @@
     "main": "index.ts",
     "devDependencies": {
         "@types/node": "^18",
-        "typescript": "^5.0.0"
+        "typescript": "^5.8.3"
     },
     "dependencies": {
         "@octokit/rest": "^21.1.1",
         "@pulumi/github": "^6.7.0",
-        "@pulumi/pulumi": "^3.113.0",
+        "@pulumi/pulumi": "^3.160.0",
         "dotenv": "^16.4.7",
+        "node-fetch": "^3.3.2",
         "openai": "^4.91.1"
     }
 }
