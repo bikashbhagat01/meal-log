@@ -2,16 +2,15 @@ name: Pulumi Deploy
 
 on:
   push:
-    paths:
-      - '**.ts'
-      - .github/workflows/deploy.yml
+    branches:
+      - main  # or your desired branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Node.js
