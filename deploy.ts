@@ -1,9 +1,10 @@
-import * as pulumi from "@pulumi/pulumi";
-import { Octokit } from "@octokit/rest";
-import fetch from "node-fetch";
 import { config } from "dotenv";
+import fetch from "node-fetch";
 
 config();
+
+// Dynamically import the Octokit library
+const { Octokit } = await import("@octokit/rest");
 
 const github = new Octokit({ auth: process.env.MY_GITHUB_TOKEN });
 const PULUMI_ACCESS_TOKEN = process.env.PULUMI_ACCESS_TOKEN!;
