@@ -1,22 +1,20 @@
 import * as pulumi from "@pulumi/pulumi";
-import * as github from "@pulumi/github";
 import { config } from "dotenv";
+import { Octokit } from "@octokit/rest";
 import fetch from "node-fetch";
 
 config();
 
-const githubClient = new github.Github({
+const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN
 });
 
 const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY!;
 
-interface HuggingFaceResponse {
-    generated_text?: string;
-}
-
+// Function to analyze the latest meal
 async function analyzeLatestMeal() {
-    const { data: issues } = await githubClient.issues.listForRepo({
+    // Fetch the most recent open issue
+    const { data: issues } = await octokit.issues.listForRepo({
         owner: process.env.REPO_OWNER!,
         repo: process.env.REPO_NAME!,
         state: "open",
@@ -31,8 +29,10 @@ async function analyzeLatestMeal() {
         return;
     }
 
+    // Prepare the prompt for HuggingFace API
     const prompt = `You are a nutritionist. Analyze this meal and give health suggestions on the meal:\n${latest.body}`;
 
+    // Make a request to the HuggingFace API
     const response = await fetch("https://api-inference.huggingface.co/models/google/flan-t5-large", {
         method: "POST",
         headers: {
@@ -45,13 +45,11 @@ async function analyzeLatestMeal() {
         })
     });
 
-    const result = (await response.json()) as HuggingFaceResponse[] | { error: string };
-    const feedback =
-        Array.isArray(result) && result[0]?.generated_text
-            ? result[0].generated_text
-            : "Could not analyze meal.";
+    const result = await response.json();
+    const feedback = result?.[0]?.generated_text || "Could not analyze meal.";
 
-    await githubClient.issues.createComment({
+    // Post the feedback as a comment on the latest issue
+    await octokit.issues.createComment({
         owner: process.env.REPO_OWNER!,
         repo: process.env.REPO_NAME!,
         issue_number: latest.number,
@@ -61,4 +59,5 @@ async function analyzeLatestMeal() {
     console.log("✅ Feedback posted on GitHub issue.");
 }
 
+// Run the function
 analyzeLatestMeal().catch(console.error);
